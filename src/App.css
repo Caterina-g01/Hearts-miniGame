@@ -1,0 +1,140 @@
+.main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  margin-top: 40px;
+}
+
+.btns-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.heart,
+.white-heart {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  transform: rotate(-45deg);
+  margin: 10px; /* Поменял на 10px для новых размеров */
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.3) rotate(-45deg);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1) rotate(-45deg);
+  }
+  100% {
+    transform: scale(1) rotate(-45deg);
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.heart {
+  background-color: rgb(213, 0, 0);
+  animation: popIn 1s ease-out;
+}
+
+.white-heart {
+  background-color: rgb(227, 227, 227);
+  animation: popIn 1s ease-out;
+}
+
+.heart::before,
+.heart::after,
+.white-heart::before,
+.white-heart::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.heart::before,
+.heart::after {
+  background-color: rgb(213, 0, 0);
+}
+
+.white-heart::before,
+.white-heart::after {
+  background-color: rgb(227, 227, 227);
+}
+
+.heart::before,
+.white-heart::before {
+  top: -20px;
+  left: 0;
+}
+
+.heart::after,
+.white-heart::after {
+  top: 0;
+  left: 20px;
+}
+
+.all-hearts-container {
+  max-width: 1600px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.hearts-container {
+  padding: 50px 20px 50px 20px;
+  border-radius: 15px;
+  width: 700px;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  background-color: rgb(28, 28, 28);
+}
+
+.btns-hearts-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hearts-column-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.red {
+  color: rgb(208, 0, 0);
+  font-weight: 700;
+}
+
+.white {
+  text-decoration: underline;
+}
