@@ -51,6 +51,14 @@ button:hover {
   border-color: transparent;
 }
 
+.active {
+  border-color: #f7f7f7;
+}
+
+.active:hover {
+  border-color: #646cff;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

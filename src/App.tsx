@@ -32,6 +32,7 @@ function App() {
 
   function handleGameStart() {
     setShowRules(true);
+
     const rulesPromise = new Promise<void>((resolve) => {
       const rulesTimer = setInterval(() => {
         setRulesTimeLeft((prevTime) => {
@@ -39,26 +40,33 @@ function App() {
             clearInterval(rulesTimer);
             setShowRules(false);
             resolve();
+            setWhiteHearts([]);
             return 0;
           }
           return prevTime - 1;
         });
       }, 1000);
     });
+
     rulesPromise.then(() => {
+      setWhiteHearts([]);
       setInGame(true);
       const gameTimer = setInterval(() => {
         setGameTimeLeft((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(gameTimer);
+            setInGame(false);
             return 0;
           }
           return prevTime - 1;
         });
       }, 1000);
+
       setGameTimeLeft(15);
     });
+
     setRulesTimeLeft(10);
+    setInGame(false);
   }
 
   function renderRules() {
@@ -70,8 +78,11 @@ function App() {
           clicking the + button. Test your speed and accuracy!
         </p>
       );
+    } else if (inGame) {
+      return <p>START!</p>;
+    } else {
+      return null;
     }
-    return null;
   }
 
   function handleReduceRedHeart() {
@@ -205,10 +216,15 @@ function App() {
                 <div className="btns-container">
                   <button
                     className={`${
-                      redHeartsCount === 0 || showRules ? "disabled" : ""
-                    }`}
+                      redHeartsCount === 0 ||
+                      showRules ||
+                      !inGame ||
+                      gameTimeLeft === 0
+                        ? "disabled"
+                        : ""
+                    } ${inGame ? "active" : ""}`}
                     onClick={(e) => {
-                      if (showRules) {
+                      if (showRules || !inGame || gameTimeLeft === 0) {
                         e.preventDefault();
                       } else {
                         handleAddWhiteHeart();
