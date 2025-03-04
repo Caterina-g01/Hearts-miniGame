@@ -9,8 +9,8 @@ function App() {
   const [whiteHearts, setWhiteHearts] = useState<JSX.Element[]>([]);
   const [inGame, setInGame] = useState<boolean>(false);
   const [showRules, setShowRules] = useState<boolean>(false);
-  const [rulesTimeLeft, setRulesTimeLeft] = useState<number>(3);
-  const [gameTimeLeft, setGameTimeLeft] = useState<number>(20);
+  const [rulesTimeLeft, setRulesTimeLeft] = useState<number>(10);
+  const [gameTimeLeft, setGameTimeLeft] = useState<number>(15);
   const [winner, setWinner] = useState<boolean>(false);
   const [gameFinished, setGameFinished] = useState<boolean>(false);
 
@@ -64,10 +64,10 @@ function App() {
           return prevTime - 1;
         });
       }, 1000);
-      setGameTimeLeft(20);
+      setGameTimeLeft(15);
     });
 
-    setRulesTimeLeft(3);
+    setRulesTimeLeft(10);
     setInGame(false);
     setGameFinished(true);
     setWhiteHearts([]);
