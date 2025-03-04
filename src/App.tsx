@@ -1,4 +1,4 @@
-import { useState, JSX, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import "./App.css";
 
 function App() {
@@ -9,13 +9,15 @@ function App() {
   const [whiteHearts, setWhiteHearts] = useState<JSX.Element[]>([]);
   const [inGame, setInGame] = useState<boolean>(false);
   const [showRules, setShowRules] = useState<boolean>(false);
-  const [rulesTimeLeft, setRulesTimeLeft] = useState<number>(10);
-  const [gameTimeLeft, setGameTimeLeft] = useState<number>(15);
+  const [rulesTimeLeft, setRulesTimeLeft] = useState<number>(3);
+  const [gameTimeLeft, setGameTimeLeft] = useState<number>(20);
+  const [winner, setWinner] = useState<boolean>(false);
+  const [gameFinished, setGameFinished] = useState<boolean>(false);
 
   function handleAddRedHeart() {
     const heart = <div className="heart" key={Date.now()}></div>;
     if (redHeartsCount >= 100) return null;
-    setRedHeartsCount(redHeartsCount + 1);
+    setRedHeartsCount((prevCount) => prevCount + 1);
     setRedHearts((prevHearts) => [...prevHearts, heart]);
   }
 
@@ -40,34 +42,43 @@ function App() {
             clearInterval(rulesTimer);
             setShowRules(false);
             resolve();
-            setWhiteHearts([]);
             return 0;
           }
+          setWhiteHearts([]);
+          setWhiteHeartsCount(0);
           return prevTime - 1;
         });
       }, 1000);
     });
 
     rulesPromise.then(() => {
-      setWhiteHearts([]);
       setInGame(true);
       const gameTimer = setInterval(() => {
         setGameTimeLeft((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(gameTimer);
             setInGame(false);
+            setGameFinished(true);
             return 0;
           }
           return prevTime - 1;
         });
       }, 1000);
-
-      setGameTimeLeft(15);
+      setGameTimeLeft(20);
     });
 
-    setRulesTimeLeft(10);
+    setRulesTimeLeft(3);
     setInGame(false);
+    setGameFinished(true);
+    setWhiteHearts([]);
+    setWhiteHeartsCount(0);
   }
+
+  useEffect(() => {
+    if (whiteHeartsCount >= 100) {
+      setWinner(true);
+    }
+  }, [whiteHeartsCount]);
 
   function renderRules() {
     if (showRules) {
@@ -80,6 +91,8 @@ function App() {
       );
     } else if (inGame) {
       return <p>START!</p>;
+    } else if (gameFinished) {
+      return renderNumberOfRedHeartsLeft();
     } else {
       return null;
     }
@@ -87,23 +100,23 @@ function App() {
 
   function handleReduceRedHeart() {
     if (redHeartsCount <= 0) return;
-    setRedHeartsCount(redHeartsCount - 1);
+    setRedHeartsCount((prevCount) => prevCount - 1);
     setRedHearts((prevHearts) => prevHearts.slice(0, -1));
   }
 
   function handleAddWhiteHeart() {
     if (whiteHeartsCount >= 100) return null;
-    const heart = <div className="white-heart" key={Date.now()}></div>;
+    const heart = <div className="white-heart" key={Date.now()} />;
     if (redHearts.length > 0 || inGame) {
       setWhiteHearts((prevHearts) => [...prevHearts, heart]);
-      setWhiteHeartsCount(whiteHeartsCount + 1);
+      setWhiteHeartsCount((prevCount) => prevCount + 1);
       handleReduceRedHeart();
     }
   }
 
   function handleReduceWhiteHeart() {
     if (whiteHeartsCount > 0) {
-      setWhiteHeartsCount(whiteHeartsCount - 1);
+      setWhiteHeartsCount((prevCount) => prevCount - 1);
       setWhiteHearts((prevHearts) => prevHearts.slice(0, -1));
       handleAddRedHeart();
     }
@@ -160,6 +173,14 @@ function App() {
     }
   }
 
+  function renderNumberOfRedHeartsLeft() {
+    if (winner) {
+      return <p>You win!</p>;
+    } else {
+      return <p>You lost.. Try again</p>;
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -204,11 +225,7 @@ function App() {
                 </div>
                 <p>Max 100 hearts</p>
               </div>
-              {inGame ? (
-                <div className="hearts-container">{redHearts}</div>
-              ) : (
-                <div className="hearts-container">{redHearts}</div>
-              )}
+              <div className="hearts-container">{redHearts}</div>
             </div>
             <div className="hearts-column-container">
               <div className="btns-hearts-container">
@@ -216,15 +233,12 @@ function App() {
                 <div className="btns-container">
                   <button
                     className={`${
-                      redHeartsCount === 0 ||
-                      showRules ||
-                      !inGame ||
-                      gameTimeLeft === 0
+                      redHeartsCount === 0 || showRules || gameTimeLeft === 0
                         ? "disabled"
                         : ""
                     } ${inGame ? "active" : ""}`}
                     onClick={(e) => {
-                      if (showRules || !inGame || gameTimeLeft === 0) {
+                      if (showRules || gameTimeLeft === 0) {
                         e.preventDefault();
                       } else {
                         handleAddWhiteHeart();
@@ -258,4 +272,3 @@ function App() {
 }
 
 export default App;
-// quando scade disable btn
